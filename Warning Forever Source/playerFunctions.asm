@@ -38,7 +38,7 @@ Joypad1Check:
     ld a, (kbPos)                ;Use proper still animation frame
     ld c, $00                       ;Check if last input was UP
     cp c                            ;
-    jr z, UStill                   ;Draw still UP frame
+    jp z, UStill                   ;Draw still UP frame
     ;DOWN?
     ld c, $01                       ;Check if last input was UP
     cp c                            ;

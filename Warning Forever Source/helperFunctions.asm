@@ -124,7 +124,6 @@ TextToScreen:
         call SetVDPAddress   
     pop hl
     
-
 Write:
     ld a, (hl)              ;Read until we hit $ff
     cp $ff                  ;
@@ -137,6 +136,33 @@ Write:
     jr -                                    ;
 +:  ret
 
+
+;===================================================
+;Mathematics
+;===================================================
+;An alteration on the division algorithm used by Sean Mclaughlin in
+;   Learn TI-83 Plus Assembly In 28 Days
+Div8Bit:
+    ;Divides one 8 bit number by another 8 bit number
+    ;Parameters: H = Dividend, D = Divisor
+    ;Affects: A, B, D, HL
+    xor a               ;Clear out A register
+    ld l,  a            ;   and L register
+    ld b, 8
+Div8Loop:
+    add hl, hl          ;shift H one to the left
+    rla                 ;Put the carry into bit 0 of register A
+    jr c, Div8Sub       ;If the carry flag gets set, we subtract
+    cp d                ;If A is greater than or equal to D, we subtract
+    jr nc, Div8Sub
+    djnz Div8Loop       ;Otherwise, we refresh
+Div8Sub:
+    sub d               ;Subtract D from A
+    inc l               ;Add to our quotient
+    djnz Div8Loop
+    ret
+
+    
 TestFunction:
     ;This sets the sprite color palette to be grayscale
     push hl
