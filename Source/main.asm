@@ -49,7 +49,7 @@ banks 1
 ;==============================================================
 ; SDSC tag and ROM header
 ;==============================================================
-.sdsctag 0.1, "Warning Forever", "Just in the early stages","Bofner"
+.sdsctag 0.1, "Warning Forever", "Beginning stages of a shoot-em-up","Bofner"
 
 .bank 0 slot 0
 .org $0000
