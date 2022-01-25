@@ -1,4 +1,4 @@
-#Thanks for checking out Warning Forever! 
+# Thanks for checking out Warning Forever! 
 
 This is a project I'm working on as part of my final semester of my masters degree in computer science. 
 Warning Forever is an arcade style free-roaming shoot-em-up game for the Sega Master System in z80 assembly. 
