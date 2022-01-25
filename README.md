@@ -7,7 +7,7 @@ This repository will act as a way to catalogue this project, and as soon as I fi
 things, it will also act as a tutorial of sorts, outlining my process, and discussing the tools that I found
 to be most helpful in learning my first assmebly language. 
 
-For now, I recommend starting off learning z80 for on of Texas Instruments 83 series calculators, like the TI-84+, 
+For now, I recommend starting off learning z80 for one of Texas Instruments 83 series calculators, like the TI-84+, 
 as it uses the same z80 cpu as the Sega Master System, but has more resources for learning how to code. Specifically 
 Sean McLaughlin's Learn TI-83 Plus Assembly In 28 Days (https://tutorials.eeems.ca/ASMin28Days/lesson/toc.html). 
 You'll need to find a different assembler, but I'll update all of that info in due time. 
