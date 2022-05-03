@@ -14,15 +14,17 @@ All sprite OBJs have the same basic structure that can be added onto, but the or
     sprSize     db      ;The total area of the OBJ
     
 .endst
+
 ;Other bytes of data may be added before hitAdr, or after SprSize, but not between
+
 ;any of the data bytes labeled above, as this will mess with the pointer
 
 Any sprite OBJ that needs to be drawn using this subroutine MUST follow this structure. In addition to having this structure, there are a couple of parameters that must be set before calling the subroutine. The following is the main description for this subroutine:
 
-;Updates any sprite-OBJect. DE is our *pointer, and HL is used for
-;updating the properties of the sprite
-;Parameters: DE = spriteOBJ.sprNum
-;Affects: DE, A, BC
+Updates any sprite-OBJect. DE is our pointer, and HL is used for
+updating the properties of the sprite
+Parameters: DE = spriteOBJ.sprNum
+Affects: DE, A, BC
 
 The 16-bit register DE must be set to the spriteOBJ.sprNum, which can simply be done by the following assembly code:
 
