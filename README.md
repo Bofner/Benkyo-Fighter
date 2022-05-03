@@ -4,6 +4,27 @@ This is a project I'm working on as part of my final semester of my masters degr
 
 This repository will act as a way to catalogue this project, and as soon as I figure out how I want to format things, it will also act as a tutorial of sorts (At least for chapter 0), outlining my process, and discussing the tools that I found to be most helpful in learning my first assmebly language, as well as creating assets and everything else involved in game design.
 
-For now, I recommend starting off learning z80 for one of Texas Instruments 83 series calculators, like the TI-84+, as it uses the same z80 cpu as the Sega Master System, but has more resources for learning how to code. Specifically Sean McLaughlin's Learn TI-83 Plus Assembly In 28 Days (https://tutorials.eeems.ca/ASMin28Days/lesson/toc.html). You'll need to find a different assembler, but I'll update all of that info in due time. 
+# Making your own Sega Master System Programs
+
+If you want to learn z80 assembly, I recommend starting off with one of Texas Instruments 83 series calculators, like the TI-84+, as it uses the same z80 cpu as the Sega Master System, but has more resources for learning how to code. Specifically Sean McLaughlin's Learn TI-83 Plus Assembly In 28 Days (https://tutorials.eeems.ca/ASMin28Days/lesson/toc.html). It uses a different assembler though. I ended up using the assembler Brass (https://benryves.com/bin/brass/).
+
+For getting assembly up and running on the Sega Master System, I recommend using the WLA-DX assembler. The following tutorial (https://www.smspower.org/maxim/HowToProgram/Lesson1AllOnOnePage) was how I got everything up and running initially, and it contains some already compiled binaries. If you want to compile them yourself though, you can get the files from https://github.com/vhelin/wla-dx
+
+You'll need to use some sort of IDE for running your code. While the tutorial by Maxim suggests using Context, I find it to be a bit outdated and clunky. My IDE of choice is Visual Studio Code. Not only is it a little sleeker and easier on the eyes than Context, but it also has a lot of helpful user-created pluggins you can download that are made specifically for z80 assembly. The following are the ones that I found to be the most useful 
+
+ASM Code Lens: https://marketplace.visualstudio.com/items?itemName=maziac.asm-code-lens 
+
+WLA-DX for VS Code: https://marketplace.visualstudio.com/items?itemName=KrocCamen.wla-dx-vscode&utm_source=VSCode.pro&utm_campaign=AhmadAwais
+
+Z80 Instruction Set: https://marketplace.visualstudio.com/items?itemName=maziac.z80-instruction-set
+
+Z80 Macro Assembler: https://marketplace.visualstudio.com/items?itemName=mborik.z80-macroasm
+
+Z80 Assembly: https://marketplace.visualstudio.com/items?itemName=Imanolea.z80-asm
+
+Hex Editor: https://marketplace.visualstudio.com/items?itemName=ms-vscode.hexeditor
+
+Not all of these are necessary, but I found them to all be incredibly useful. 
+
 
 Feel free to reach out to me with any questions at a.bofner@gmail.com
