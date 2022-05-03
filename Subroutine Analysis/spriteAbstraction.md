@@ -2,9 +2,11 @@
 The subroutine for drawing sprites to the screen works in tandem with the specific structure of each sprite object that will be displayed on screen. The Sega Master System can only draw sprites in 8x8 or 8x16 size pieces. This subroutine works only for 8x16 sprites, but it can be used to draw a object of up to 15x15 sprites (of size 8x16). I refer to these large sprite objects as sprite OBJs.
 
 All sprite OBJs have the same basic structure that can be added onto, but the order of the base structure cannot be altered for the subroutine to work. Below is the basic structure for all sprite OBJs. The Mongoose sprite was the first sprite OBJ that was designed using this subroutine, and consists of only the necessary data to have it be drawn to the screen. Brief descriptions of each byte or word of data follow their declaration. 
-
+    
+    ;==============================================================
+    ; Mongoose structure
+    ;==============================================================
     .struct mongoose
-
     hitAdr      dw      ;The address where hit-detection subroutine for that specific OBJ type is
     sprNum      db      ;The draw-number of the sprite      
     hw          db      ;The height and width of the entire OBJ
@@ -12,9 +14,7 @@ All sprite OBJs have the same basic structure that can be added onto, but the or
     x           db      ;The X coord of the OBJ
     cc          db      ;The first character code for the OBJ 
     sprSize     db      ;The total area of the OBJ
-    
     .endst
-
     ;Other bytes of data may be added before hitAdr, or after SprSize, but not between
     ;any of the data bytes labeled above, as this will mess with the pointer
 
@@ -95,7 +95,6 @@ The subroutine then checks how many more sprites we have left to draw in our row
 
     ;If we have finished a row
     ;Reset our *pointer
-
     dec de                      ;ld de, OBJ.cc
     dec de                      ;ld de, OBJ.x
     dec de                      ;ld de, OBJ.y
