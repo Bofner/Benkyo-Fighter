@@ -26,5 +26,9 @@ Hex Editor: https://marketplace.visualstudio.com/items?itemName=ms-vscode.hexedi
 
 Not all of these are necessary, but I found them to all be incredibly useful. 
 
+You'll also need to run an emulator in order to test your programs. I suggest Emulicious, as it has an incredible debugging feature that I could not have done without. (https://emulicious.net/). 
+
+And in order to get your emulator working with VS Code, you'll need to create a task. I've supplied the task.json file that I use for compiling my code, and it includes a a task for the TI-83 Calculator, as well as a Gameboy Color task that uses a different assembler all together called RGBDS. All we need to worry about is the SMS task. The task relies on the buildSMS.bat file, which I've also supplied in this repository. Your path may be different from mine, so it may need some adjustment. 
+
 
 Feel free to reach out to me with any questions at a.bofner@gmail.com
