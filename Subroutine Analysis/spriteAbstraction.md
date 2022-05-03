@@ -3,9 +3,6 @@ The subroutine for drawing sprites to the screen works in tandem with the specif
 
 All sprite OBJs have the same basic structure that can be added onto, but the order of the base structure cannot be altered for the subroutine to work. Below is the basic structure for all sprite OBJs. The Mongoose sprite was the first sprite OBJ that was designed using this subroutine, and consists of only the necessary data to have it be drawn to the screen. Brief descriptions of each byte or word of data follow their declaration. 
 
-;==============================================================
-; Mongoose structure
-;==============================================================
 .struct mongoose
     hitAdr      dw      ;The address where hit-detection subroutine for that specific OBJ type is
     sprNum      db      ;The draw-number of the sprite      
