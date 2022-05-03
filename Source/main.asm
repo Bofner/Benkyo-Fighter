@@ -16,40 +16,84 @@ banks 1
 ;==============================================================
 ; SMS defines
 ;==============================================================
-.define VDPCommand $bf 
-.define VDPData $be
-.define VRAMWrite $4000
-.define CRAMWrite $c000
-.define NameTable $3800
-.define TextBox $3ccc
+.define VDPCommand  $bf 
+.define VDPData     $be
+.define VRAMWrite   $4000
+.define CRAMWrite   $c000
+.define NameTable   $3800
+.define TextBox     $3ccc
+
+.define UpBounds    $02
+.define DownBounds  $bd
+.define LeftBounds  $05
+.define RightBounds $fd
 
 ;==============================================================
-; SAT Buffer
+; Game Constants
 ;==============================================================
-.equ kbVP $c000
-.equ kbHP $c080
-.equ kbCC $c081
+.equ plyShot1Loc    $2080       ;Sprite VRAM location for first shot
+.equ plyShot2Loc    $20c0       ;Sprite VRAM location for second shot
+.equ kbShotSpr1     $04         ;CC VRAM location for first shot
+.equ kbShotSpr2     $06         ;CC VRAM location for second shot
 
-.equ endSprite $c002       ;First empty sprite location
+.equ enemy1Loc      $2100
+.equ enemySpr1      $08         ;CC VRAM location for first enemy sprite
+
+
+.equ enemySpr2      $0a         ;CC VRAM location for second enemy sprite
 
 ;==============================================================
 ; Variables 
 ;==============================================================
 .enum $c000 export
-    SATBuff dsb 256          ;Set aside 256 bytes for SAT buffer
+    SATBuff         dsb 256     ;Set aside 256 bytes for SAT buffer $100
+    SOAL            dsb 128     ;Set aside 128 bytes for Sprite Object Address List $ 80
 
-    kbY db             ;Pilot's x coord
-    kbX db             ;Pilot's Y coord
-    kbAnim db          ;Pilot's animation frame
-    kbPos db           ;What direction is pilot facing? (only uses two bits)
+    VDPStatus       db
 
+    spriteCount     dw          ;How many sprites are on screen at once? It's a word to assist the SATBuffer
+    sprUpdCnt       db          ;Keeps track of how many sprites we have updated per frame
+
+    sprChkCntr      db          ;Sprite (Collision) Check Counter, used to keep track of what sprites we've gone through
+
+    kbShotBuffer    db          ;Number of active projectiles from player
+
+    scrollX         db          ;Scroll value for BG in x direction
+    scrollY         db          ;Scroll value for BG in y direction
+
+    colXOffset      db          ;Stored X value for Nametable offset in BG-Sprite collision
+    colYOffset      db          ;Stored Y value for Nametable offset in BG-Sprite collision 
+
+    frameCount      db          ;Used to count frames in intervals of 60
+
+    sceneComplete   db          ;Used to determine if a scene is finished or not
+
+    randSeed        db          ;Our seed for random numbers
+
+    sprYOff         db          ;Offset for the Y position of sprites when drawing them to the screen (Updates by $10)
+    sprXOff         db          ;Offset for the X position of sprites when drawing them to the screen (Updates by $08)
+    sprCCOff        db          ;Offset for the CC of sprites when drawing them to the screen         (Updates by $02)
+
+    ;Seems that $c000 to $dfff is the space I have to work with for variables and such
+    ;Current usage: $c190
     
 .ende
+
+
+
+;=============================================================================
+; Special numbers 
+;=============================================================================
+.define postBoiler  $c190   ;Location in memory that is past the boiler plate stuff
+
+;Initialize our random seed
+    ld hl, randSeed
+    ld (hl), $69
 
 ;==============================================================
 ; SDSC tag and ROM header
 ;==============================================================
-.sdsctag 0.1, "Warning Forever", "Beginning stages of a shoot-em-up","Bofner"
+.sdsctag 0.1, "Benkyo Fighter: The Prologue", "Beginning stages of a shoot-em-up","Bofner"
 
 .bank 0 slot 0
 .org $0000
@@ -58,7 +102,7 @@ banks 1
 ;==============================================================
     di              ;Disable interrupts
     im 1            ;Interrupt mode 1
-    jp init      ;Jump to the initialization program
+    jp init         ;Jump to the initialization program
 
 ;==============================================================
 ; Interrupt Handler
@@ -66,6 +110,7 @@ banks 1
 .orga $0038
     push af
         in a,(VDPCommand)
+        ld (VDPStatus), a
     pop af
     ei
     reti
@@ -74,7 +119,14 @@ banks 1
 ; Pause button handler
 ;==============================================================
 .org $0066
-    ;For now, do nothing
+    ;For now, change the palette
+        ; First we set the VRAM write address to CRAM for Sprite
+    ld hl, $c010 | CRAMWrite
+    call SetVDPAddress
+    ; Next we send the VDP the palette data
+    ld hl, TestPalette
+    ld bc, TestPaletteEnd-TestPalette
+    call CopyToVDP
     retn
 
 
@@ -84,13 +136,9 @@ banks 1
 init: 
     ld sp, $dff0
 
-    ;==============================================================
-    ; Set up VDP Registers
-    ;==============================================================
-    ;ld hl, VDPInitData
-    ;ld b, VDPInitDataEnd - VDPInitData
-    ;ld c, VDPCommand
-    ;otir
+;==============================================================
+; Set up VDP Registers
+;==============================================================
 
     ld hl,VDPInitData                       ; point to register init data.
     ld b,VDPInitDataEnd - VDPInitData       ; 11 bytes of register data.
@@ -98,9 +146,9 @@ init:
     call SetVDPRegisters
     
 
-    ;==============================================================
-    ; Clear VRAM
-    ;==============================================================
+;==============================================================
+; Clear VRAM
+;==============================================================
     
     ;First, let's set the VRAM write address to $0000
     ld hl, $0000 | VRAMWrite
@@ -113,116 +161,61 @@ init:
     ld a, b             
     or c                ;Check if we are at zero
     jr nz,-             ;If not, loop back up
-
-    ;==============================================================
-    ; Load Palette
-    ;==============================================================
-    ; First we set the VRAM write address to CRAM for Sprite
-    ld hl, $c010 | CRAMWrite
-    call SetVDPAddress
-    ; Next we send the VDP the palette data
-    ld hl, SpritePaletteData
-    ld bc, SpritePaletteDataEnd-SpritePaletteData
-    call CopyToVDP
-
-    ;Next we do for Background
-    ld hl, $0000 | CRAMWrite
-    call SetVDPAddress
-    ;Next we send the BG palette data
-    ld hl, BGPaletteData
-    ld bc, BGPaletteDataEnd-BGPaletteData
-    call CopyToVDP
-
-    ;==============================================================
-    ; Load BG tiles 
-    ;==============================================================
-    ;First we write to VRAM write address for our font, which
-    ;   resides at the end of our sprite characters
-    ld hl, $1aa0 | VRAMWrite
-    call SetVDPAddress
-    ; Then we send the VDP our tile data
-    ld hl, FontTiles                ;Location of tile data
-    ld bc, FontTilesEnd-FontTiles   ;Counter for the number of bytes we write
-    call CopyToVDP
-
-    ;Loading our testing background
-    ld hl, $0000 | VRAMWrite
-    call SetVDPAddress
-    ; Then we send the VDP our tile data
-    ld hl, groundTiles                ;Location of tile data
-    ld bc, groundTilesEnd-groundTiles   ;Counter for the number of bytes we write
-    call CopyToVDP
-
-    ;==============================================================
-    ; Load Sprite tiles 
-    ;==============================================================
-    
-    ;Now we want to write the character data. For now, we will just
-    ;   keep all the frames in VRAM since there's so few
-    ld hl, $2000 | VRAMWrite
-    call SetVDPAddress
-    ; Then we send the VDP our tile data
-    ld hl, KBUp2                 ;Location of tile data
-    ld bc, KBUp2End-KBUp2  ;Counter for the number of bytes we write
-    call CopyToVDP
-
-
-    ;==============================================================
-    ; Initialize Sprite locations 
-    ;==============================================================
-
-    ;Initialize KB's starting position
-    ld hl, kbY
-    ld (hl), 100
-    ld hl, kbX
-    ld (hl), 150
-    ld hl, kbAnim
-    ld (hl), 0
-
-    ;Initialize KB's direction
-    ld hl, kbPos
-    ld (hl), $01
-    
-    ;==============================================================
-    ; Write background map
-    ;==============================================================
-    ;Loading in the testing background
-    ld hl, $3800 | VRAMWrite
-    call SetVDPAddress
-    ld hl, groundMap
-    ld bc, groundMapEnd-groundMap
-    call CopyToVDP
-
-    ;Turn on screen (Maxim's explanation is too good not to use)
-    ld a, %01100010
-;           ||||||`- Zoomed sprites -> 16x16 pixels
-;           |||||`-- Doubled sprites -> 2 tiles per sprite, 8x16
-;           ||||`--- Mega Drive mode 5 enable
-;           |||`---- 30 row/240 line mode
-;           ||`----- 28 row/224 line mode
-;           |`------ VBlank interrupts
-;            `------- Enable display    
-    out (VDPCommand), a
-    ld a, $81               ;Command byte for Register 1
-    out (VDPCommand), a
-    
-    
-    ei
-    
 ;==============================================================
-; Game loop 
+; Setup general sprite variables
 ;==============================================================
-    
-GameLoop:       ;This is the loop
-    halt
-    call UpdateSAT
-    
-    call UpdSATBuff
+;Let a hold zero
+    xor a
 
-    ;Testing joypad 1 input
-    call Joypad1Check
+;Initialize the number of sprites on the screen
+    ld hl, spriteCount      ;Set sprite count to 0
+    ld (hl), a              ;
+    inc hl                  ;Saving a memory address ($c000, beginning of SAT buffer)
+    ld (hl), $C0
 
-    jp GameLoop     ;Yarg
+;Initialize the number of sprites that have been updated
+    ld hl, sprUpdCnt        ;Set num of updated sprites to 0
+    ld (hl), a              ;
+
+;Initialize the offsets for our sprites to be zero
+    ld hl, sprYOff
+    ld (hl), a
+    inc hl                  ;ld hl, sprXOff
+    ld (hl), a
+    inc hl                  ;ld hl, sprCCOff
+    ld (hl), a
+
+;==============================================================
+; Game sequence
+;==============================================================
+
+    call prologueTitle
+
+    jp VillageFight
+
+;========================================================
+; Include Object Files
+;========================================================
+.include "structs.asm"
+.include "playerFunctions.asm"
+.include "playerShot.asm"
+.include "chromeSpinner.asm"
+.include "carrier.asm"
+.include "bigEye.asm"
+.include "mongoose.asm"
+
+;========================================================
+; Include Helper Files
+;========================================================
+.include "psDecompression.asm"
+.include "helperFunctions.asm"
+
+;========================================================
+; Include Level Files
+;========================================================
+.include "titleScreen.asm"
+.include "villageFight.asm"
+
 
 ;========================================================
 ; Registers
@@ -235,67 +228,27 @@ VDPInitData:
 
               .db $ff                   ; reg. 2, Name table at $3800
 
-              .db $ff                   ; reg. 3
+              .db $ff                   ; reg. 3 Always set to $ff
 
-              .db $ff                   ; reg. 4
+              .db $ff                   ; reg. 4 Always set to $ff
 
-              .db $ff                   ; reg. 5, $ff = SAT at $3f00
+              .db $ff                   ; reg. 5 Address for SAT, $ff = SAT at $3f00 
 
-              .db $ff                   ; reg. 6
+              .db $ff                   ; reg. 6 Base address for sprite patterns
 
-              .db $f8                   ; reg. 7 Overrscan Color    
+              .db $f2                   ; reg. 7 Overrscan Color    
 
-              .db $00                   ; reg. 8 
+              .db $00                   ; reg. 8 Horizontal Scroll
 
-              .db $00                   ; reg. 9 
+              .db $00                   ; reg. 9 Vertical Scroll
 
-              .db $ff                   ; reg. 10
+              .db $ff                   ; reg. 10 Raster line interrupt
 
 VDPInitDataEnd:
 
 ;========================================================
-; Assets
+; Text Configuration
 ;========================================================
-
-    ;--------------------------------
-    ; Background Palettes
-    ;--------------------------------
-BGPaletteData:
-    .db $1A $2F $05 $15 $3E $20 $10 $00
-BGPaletteDataEnd
-
-    ;--------------------------------
-    ; Sprite Palettes
-    ;--------------------------------
-SpritePaletteData:
-    .db $24 $3F $00 $08 $3E $2A $15
-SpritePaletteDataEnd:
-
-Testing:
-    .db $00 $15 $2A $3F $00 $15 $2A $3F $3F $2A $15 $00 $3F $2A $15 $00
-TestingEnd
-
-    ;--------------------------------
-    ; Background Tiles
-    ;--------------------------------
-
-    ;Font Tile Data
-    .include "assets\\tiles\\font.inc" 
-
-    ;Testing Ground for animations/collision etc
-    .include "assets\\tiles\\testingGround.inc"
-
-    ;--------------------------------
-    ; Sprite Tiles
-    ;--------------------------------
-    ;For now I'm using inc files. They're bigger, and I don't know if that
-    ;   makes a difference or not, but I can edit them directly
-    ;Pilot Tile Data:
-    .include "assets\\tiles\\KBShip.inc" 
-
-    ;--------------------------------
-    ;Text Configuration
-    ;--------------------------------
     .asciitable
         map " " = $d5
         map "0" to "9" = $d6
@@ -307,19 +260,21 @@ TestingEnd
         map "A" to "Z" = $e5
     .enda
 
-;========================================================
-; Tile Maps
-;========================================================
-.include "assets\\maps\\testingGround.inc"
-
 TestMessage:
     ;50Ch"0123456789ABCDEF789012345 123456789ABCDEF789012345"
     .asc "Intiate work on ISP"
     .db $ff     ;Terminator byte
 
+TestPalette:
+    .db $00 $15 $2A $3F $00 $15 $2A $3F $3F $2A $15 $00 $3F $2A $15 $00
+TestPaletteEnd:
+
 ;========================================================
-; Include Files
+; Extra Data
 ;========================================================
-.include "helperFunctions.asm"
-.include "playerFunctions.asm"
+    .include "spriteDefines.asm"
+
+    ;Font Tile Data
+    .include "assets\\tiles\\backgrounds\\font_tiles.inc" 
+
 
