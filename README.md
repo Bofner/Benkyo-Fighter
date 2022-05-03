@@ -30,5 +30,9 @@ You'll also need to run an emulator in order to test your programs. I suggest Em
 
 And in order to get your emulator working with VS Code, you'll need to create a task. I've supplied the task.json file that I use for compiling my code, and it includes a a task for the TI-83 Calculator, as well as a Gameboy Color task that uses a different assembler all together called RGBDS. All we need to worry about is the SMS task. The task relies on the buildSMS.bat file, which I've also supplied in this repository. Your path may be different from mine, so it may need some adjustment. 
 
+With all of that set up, you should (at the very least) be able to open up my source code in VS Code and get the game running using the task (so long as you've configured the path correctly). There is of course a lot to learn about the z80 assembly language if you want to make your own program, but I cannot go into the nitty gritty right now. 
+
+However, I think talking about the way that I approached some problems may be helpful, and may get you thinking in the way that the z80 cpu thinks. Perhaps you'll even be able to see flaws in my methodology (I'm by no means whatsoever an expert). I'll make this its own file though, because it may take up some space. 
+
 
 Feel free to reach out to me with any questions at a.bofner@gmail.com
