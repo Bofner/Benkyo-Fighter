@@ -3,7 +3,7 @@ The subroutine for drawing sprites to the screen works in tandem with the specif
 
 All sprite OBJs have the same basic structure that can be added onto, but the order of the base structure cannot be altered for the subroutine to work. Below is the basic structure for all sprite OBJs. The Mongoose sprite was the first sprite OBJ that was designed using this subroutine, and consists of only the necessary data to have it be drawn to the screen. Brief descriptions of each byte or word of data follow their declaration. 
 
-.struct mongoose
+    .struct mongoose
 
     hitAdr      dw      ;The address where hit-detection subroutine for that specific OBJ type is
     sprNum      db      ;The draw-number of the sprite      
@@ -13,11 +13,10 @@ All sprite OBJs have the same basic structure that can be added onto, but the or
     cc          db      ;The first character code for the OBJ 
     sprSize     db      ;The total area of the OBJ
     
-.endst
+    .endst
 
-;Other bytes of data may be added before hitAdr, or after SprSize, but not between
-
-;any of the data bytes labeled above, as this will mess with the pointer
+    ;Other bytes of data may be added before hitAdr, or after SprSize, but not between
+    ;any of the data bytes labeled above, as this will mess with the pointer
 
 Any sprite OBJ that needs to be drawn using this subroutine MUST follow this structure. In addition to having this structure, there are a couple of parameters that must be set before calling the subroutine. The following is the main description for this subroutine:
 
@@ -94,8 +93,8 @@ Once that has been done, all information necessary for drawing the sprite has be
 
 The subroutine then checks how many more sprites we have left to draw in our row. If there are more than one, then we loop back to the beginning of this section. If there aren't, then we check to see if we have any more left to draw vertically. This is done in a special way. Since our height is stored in the B register, we implement the following code:
 
-;If we have finished a row
-;Reset our *pointer
+    ;If we have finished a row
+    ;Reset our *pointer
 
     dec de                      ;ld de, OBJ.cc
     dec de                      ;ld de, OBJ.x
