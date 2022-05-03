@@ -1,0 +1,60 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "TI 83 Series ASSEMBLE",
+            "type": "shell",
+            "command": "..\\compile.bat",
+            "args": [
+                "${fileBasename}"
+            ],
+            "options": {
+                        "cwd": "${fileDirname}"
+            },
+            "presentation": {
+                            "reveal": "always",
+                            "panel": "shared",
+                            "showReuseMessage": false,
+                            "clear": true
+            },
+            "problemMatcher": []
+        },
+
+        {
+            "label": "SMS ASSEMBLE",
+            "type": "shell",
+            "windows": {
+                    "command": "..\\WLA-DX_Binaries\\buildSMS.bat"
+            },
+            "options": {
+                    "cwd": "${fileDirname}"
+            },
+            "presentation": {
+                        "echo": true, "reveal": "always", "focus": false, "panel": "shared", "showReuseMessage": false, "clear": true
+            },
+            "group": {
+                "kind": "build", "isDefault": true
+            },
+        },
+
+        {
+            "label": "GBC ASSEMBLE",
+            "type": "shell",
+            "windows": {
+                    "command": "..\\WLA-DX_Binaries\\buildGBC.bat"
+            },
+            "options": {
+                    "cwd": "${fileDirname}"
+            },
+            "presentation": {
+                        "echo": true, "reveal": "always", "focus": false, "panel": "shared", "showReuseMessage": false, "clear": true
+            },
+            "group": {
+                "kind": "build", "isDefault": false
+            },
+        }
+    ]
+
+}
