@@ -40,14 +40,17 @@ Over the course of the semester working on this project, I wasn't able to do as 
 
 ### Strafing and 8-way Shooting!
 ![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/strafing.gif)
+
 The main idea behind Benkyo Fighter was to make a game where the player could move and fire in eight directions, so that was the core focus of the first half of my semester. Getting everything to work just as intended took a lot of time, but the end result felt really good to me! Note: This GIF was recorded using a Sega Genesis Model 2 for video quality purposes, but it will run on real SMS hardware as well. 
 
 ### Hit Detection
 ![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/hit%20detection.gif)
+
 Obviously 8-way shooting doesn't mean much if there isn't anything to hit! Sadly, I my hit-detection algorithm is not perfect, and currently doesn't run on real hardware, so this GIF was made in emulator. 
 
 ### Big Sprite Animations!
 ![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/carrier.gif)
+
 I spent a good bit of time working on the design and animation of the Carrier and eyeball. The idea was to have this guy spawn enemies in for the player to fight. Unfortunately I wrote the code for his movement and spawning before I'd come up with a solid sprite drawing foundation, so he doesn't work with the current implementation of the game. But I put a lot of effort into making him, so I at least wanted to show him off. Again, This GIF was recorded using a Sega Genesis Model 2 for video quality purposes, but it will run on real SMS hardware as well. 
 
 # Updates
