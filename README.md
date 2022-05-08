@@ -1,4 +1,5 @@
 # Thanks for checking out BENKYO FIGHTER! 
+![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/Title.png)
 
 This is a project I'm working on as part of my final semester of my masters degree in computer science. Benkyo Fighter will be an arcade style free-roaming shoot-em-up game for the Sega Master System written entirely in z80 assembly. It will be released in chapter segments, with my Master's project being something of a test chapter for getting the engine up and running with only a few hints as to what the main story will be about.
 
@@ -34,5 +35,26 @@ With all of that set up, you should (at the very least) be able to open up my so
 
 However, I think talking about the way that I approached some problems may be helpful, and may get you thinking in the way that the z80 cpu thinks. Perhaps you'll even be able to see flaws in my methodology (I'm by no means whatsoever an expert). I'll make this its own file though, because it may take up some space. 
 
+# What did I accomplish in a semester?
+Over the course of the semester working on this project, I wasn't able to do as much as I'd hoped, but I did manage to learn a lot, and here are some of the results of what I was able to accomplish throughout my time working!
 
-Feel free to reach out to me with any questions at a.bofner@gmail.com
+### Strafing and 8-way Shooting!
+![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/strafing.gif)
+The main idea behind Benkyo Fighter was to make a game where the player could move and fire in eight directions, so that was the core focus of the first half of my semester. Getting everything to work just as intended took a lot of time, but the end result felt really good to me! Note: This GIF was recorded using a Sega Genesis Model 2 for video quality purposes, but it will run on real SMS hardware as well. 
+
+### Hit Detection
+![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/hit%20detection.gif)
+Obviously 8-way shooting doesn't mean much if there isn't anything to hit! Sadly, I my hit-detection algorithm is not perfect, and currently doesn't run on real hardware, so this GIF was made in emulator. 
+
+### Big Sprite Animations!
+![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/carrier.gif)
+I spent a good bit of time working on the design and animation of the Carrier and eyeball. The idea was to have this guy spawn enemies in for the player to fight. Unfortunately I wrote the code for his movement and spawning before I'd come up with a solid sprite drawing foundation, so he doesn't work with the current implementation of the game. But I put a lot of effort into making him, so I at least wanted to show him off. Again, This GIF was recorded using a Sega Genesis Model 2 for video quality purposes, but it will run on real SMS hardware as well. 
+
+# Updates
+As of 05/08/2022 I'm putting Benkyo Fighter on hold. It's a very large project, and too ambitious for my current skill set. A lot of the code that I wrote for the player character, carrier boss, enemy and hit detection work, but don't work well together, or are just poorly implemented. I've decided to take on smaller projects for the time being, until I feel I have the proper skill set and knowledge about the Master System to come back to Benkyo Fighter. This game is something that I truly want to see through. I can see just how much work it will be though, and I want to be more prepared before tackling something of this magnitude. I'll keep updating my github with my new projects as they come, most of which will be Sega Master System games, so keep an eye out for that! 
+
+Until then, feel free to reach out to me with any questions at a.bofner@gmail.com
+
+Thanks!
+
+
