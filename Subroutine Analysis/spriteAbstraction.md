@@ -17,6 +17,8 @@ All sprite OBJs have the same basic structure that can be added onto, but the or
     .endst
     ;Other bytes of data may be added before hitAdr, or after SprSize, but not between
     ;any of the data bytes labeled above, as this will mess with the pointer
+    
+![](https://github.com/Bofner/Benkyo-Fighter/blob/main/Images/Mongoose.png)
 
 Any sprite OBJ that needs to be drawn using this subroutine MUST follow this structure. In addition to having this structure, there are a couple of parameters that must be set before calling the subroutine. The following is the main description for this subroutine:
 
